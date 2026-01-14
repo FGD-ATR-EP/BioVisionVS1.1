@@ -91,4 +91,4 @@ class TemporalProcessing(nn.Module):
             out, _ = self.lstm(packed)
             out, _ = nn.utils.rnn.pad_packed_sequence(out, batch_first=True)
             return out.mean(1)
-        return features                                
+        return features
