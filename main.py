@@ -3,7 +3,7 @@ import torch
 import logging
 from src.utils.helpers import setup_logging, setup_device, visualize_output, save_model, load_model
 from src.data.processing import preprocess_image, preprocess_video
-from src.models.biovision_v2 import BioVisionNet
+from src.models.biovision_1_1s import BioVisionNetV1_1S as BioVisionNet
 
 def main():
     # 1. Argument Parsing
