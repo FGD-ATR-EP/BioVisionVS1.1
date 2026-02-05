@@ -95,6 +95,31 @@ src/
     └── helpers.py          # Logging, device setup, visualization
 ```
 
+
+### BioVisionVessel (SilentVessel V2 Integration)
+
+A standalone prototype script is also available at `bio_vision_vessel.py`, featuring `SilentVessel` (base) + `BioVisionVessel` (extension) with realtime motion awareness and colorized console output.
+
+A new integration wrapper `BioVisionVessel` is available at `src/models/biovision_vessel.py`.
+It provides:
+
+* Temporal frame buffer (`seq_len`) for sequence-aware perception.
+* Advanced qualia extraction (`edge_clarity`, `opponent_balance`, `motion_score`).
+* Mood interpretation API for downstream agents (`perceive_frame`).
+* Optional realtime loop (`perceive`) when OpenCV is installed.
+
+Example:
+
+```python
+import numpy as np
+from src.models.biovision_vessel import BioVisionVessel
+
+vessel = BioVisionVessel(seq_len=5)
+frame_bgr = np.zeros((240, 320, 3), dtype=np.uint8)
+qualia = vessel.perceive_frame(frame_bgr)
+print(qualia)
+```
+
 ### Contribution Workflow
 We use a specific versioning strategy (see below). When contributing:
 *   **Bug fixes**: Submit PRs to the current branch.
