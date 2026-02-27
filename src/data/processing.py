@@ -52,7 +52,7 @@ def preprocess_video(video_path, seq_len=5, target_size=(224, 224), grayscale=Fa
             indices = np.linspace(0, num_frames - 1, seq_len, dtype=int)
             
         frames = video[indices] # [seq_len, h, w, c]
-        frames = frames.permute(0, 3, 1, 2) # [seq_len, c, h, w]
+        frames = frames.permute(0, 3, 1, 2).float() / 255.0 # [seq_len, c, h, w] in [0, 1]
         
         transform = transforms.Compose([
             transforms.Resize(target_size),

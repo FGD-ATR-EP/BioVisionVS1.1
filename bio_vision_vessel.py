@@ -206,7 +206,7 @@ class BioVisionVessel(SilentVessel):
     def perceive(self, source: int = 0):
         if cv2 is None:
             raise RuntimeError(
-                "OpenCV is required for realtime `perceive`. Install with: pip install opencv-python"
+                "OpenCV is required for real-time `perceive`. Install with: pip install opencv-python"
             )
 
         cap = cv2.VideoCapture(source)

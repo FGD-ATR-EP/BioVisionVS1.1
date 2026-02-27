@@ -39,8 +39,8 @@ BioVisionNet is not just an image classifier; it is a simulation of "seeing." It
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/your-repo/BioVisionNet.git
-    cd BioVisionNet
+    git clone https://github.com/your-org/BioVisionVS1.1.git
+    cd BioVisionVS1.1
     ```
 
 2.  Install dependencies:
@@ -98,7 +98,7 @@ src/
 
 ### BioVisionVessel (SilentVessel V2 Integration)
 
-A standalone prototype script is also available at `bio_vision_vessel.py`, featuring `SilentVessel` (base) + `BioVisionVessel` (extension) with realtime motion awareness and colorized console output.
+A standalone prototype script is also available at `bio_vision_vessel.py`, featuring `SilentVessel` (base) + `BioVisionVessel` (extension) with real-time motion awareness and colorized console output.
 
 A new integration wrapper `BioVisionVessel` is available at `src/models/biovision_vessel.py`.
 It provides:
@@ -106,7 +106,7 @@ It provides:
 * Temporal frame buffer (`seq_len`) for sequence-aware perception.
 * Advanced qualia extraction (`edge_clarity`, `opponent_balance`, `motion_score`).
 * Mood interpretation API for downstream agents (`perceive_frame`).
-* Optional realtime loop (`perceive`) when OpenCV is installed.
+* Optional real-time loop (`perceive`) when OpenCV is installed.
 
 Example:
 
