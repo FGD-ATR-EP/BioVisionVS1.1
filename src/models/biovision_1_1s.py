@@ -85,11 +85,11 @@ class RetinalNeuralProcessing(nn.Module):
         out_channels = self.conv.out_channels
         in_channels = self.conv.in_channels
 
-        # Standard Sobel X (Vertical Lines)
+        # Standard Sobel X (responds strongly to vertical lines)
         # [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]
         sobel_h_kernel = torch.tensor([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=torch.float32)
 
-        # Standard Sobel Y (Horizontal Lines)
+        # Standard Sobel Y (responds strongly to horizontal lines)
         # [[-1, -2, -1], [0, 0, 0], [1, 2, 1]]
         sobel_v_kernel = torch.tensor([[-1, -2, -1], [0, 0, 0], [1, 2, 1]], dtype=torch.float32)
 
@@ -97,8 +97,8 @@ class RetinalNeuralProcessing(nn.Module):
         sobel_h = sobel_h_kernel.view(1, 1, 3, 3)
         sobel_v = sobel_v_kernel.view(1, 1, 3, 3)
 
-        # We want half filters to be H, half to be V
-        # If out_channels = 32, first 16 are H, next 16 are V
+        # Split filters equally: Sobel-X group first, Sobel-Y group second.
+        # If out_channels = 32, first 16 are X-gradient and next 16 are Y-gradient.
         split = out_channels // 2
 
         # Create weights for H part [split, in_channels, 3, 3]
