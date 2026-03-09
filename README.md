@@ -13,6 +13,8 @@ This project is part of the **INSPIRAFIRMA / AETHERIUM-GENESIS** initiative, aim
 - [For General Users: Getting Started](#for-general-users-getting-started)
 - [For Developers: Contribution & Setup](#for-developers-contribution--setup)
 - [For Researchers: Technical Report (v1.1s)](#for-researchers-technical-report-v11s)
+- [System Architecture Diagram (Database-Aligned)](#system-architecture-diagram-database-aligned)
+- [Product Roadmap Suggestions (EN/TH)](#product-roadmap-suggestions-enth)
 - [Versioning Strategy](#versioning-strategy)
 - [License](#license)
 
@@ -162,6 +164,99 @@ This is the core upgrade in version 1.1s.
 *   **Logic**: Consciousness is not static; it is a flow. v1.1s maintains the **Temporal Adapter** from v2.
 *   **Input**: 5D Tensor `[Batch, Sequence, Channel, Height, Width]`.
 *   **Mechanism**: Aggregates features over time (currently via Mean Pooling, upgradable to LSTM/Transformer) to form a context-aware embedding.
+
+---
+
+## System Architecture Diagram (Database-Aligned)
+
+To keep model execution auditable and reproducible, this architecture maps the runtime pipeline to a normalized persistence layer (experiment-centric schema).
+
+```mermaid
+erDiagram
+    MODEL_VERSIONS ||--o{ EXPERIMENT_RUNS : "used by"
+    INPUT_ASSETS ||--o{ EXPERIMENT_RUNS : "drives"
+    EXPERIMENT_RUNS ||--o{ INFERENCE_RESULTS : "produces"
+    INFERENCE_RESULTS ||--o{ QUALIA_METRICS : "describes"
+    EXPERIMENT_RUNS ||--o{ OUTPUT_ARTIFACTS : "exports"
+
+    MODEL_VERSIONS {
+      string model_version PK
+      string base_architecture
+      string version_suffix
+      datetime created_at
+    }
+
+    INPUT_ASSETS {
+      string asset_id PK
+      string asset_type
+      string source_path
+      int frame_count
+      datetime ingested_at
+    }
+
+    EXPERIMENT_RUNS {
+      string run_id PK
+      string model_version FK
+      string asset_id FK
+      string mode
+      bool visualize
+      datetime started_at
+      datetime finished_at
+      string status
+    }
+
+    INFERENCE_RESULTS {
+      string result_id PK
+      string run_id FK
+      int class_index
+      float confidence
+      string logits_hash
+      datetime created_at
+    }
+
+    QUALIA_METRICS {
+      string metric_id PK
+      string result_id FK
+      float edge_clarity
+      float opponent_balance
+      float motion_score
+    }
+
+    OUTPUT_ARTIFACTS {
+      string artifact_id PK
+      string run_id FK
+      string artifact_type
+      string file_path
+      string checksum
+    }
+```
+
+### Data Flow Summary
+1. `INPUT_ASSETS` stores source media metadata (image/video + origin).
+2. `EXPERIMENT_RUNS` binds runtime arguments (`mode`, `visualize`) to a specific `MODEL_VERSIONS` snapshot.
+3. `INFERENCE_RESULTS` stores classification output and reproducibility keys.
+4. `QUALIA_METRICS` captures biologically inspired signals (edge/opponent/motion).
+5. `OUTPUT_ARTIFACTS` tracks generated files such as retinal maps and logs.
+
+---
+
+## Product Roadmap Suggestions (EN/TH)
+
+> Note: The "Completed Suggestions" list has been intentionally removed in both English and Thai sections to avoid mixing done work with active/planned initiatives.
+
+### English — New Suggested Features / Next Steps
+1. **Run Registry UI**: dashboard for filtering runs by model version, input type, and qualia score.
+2. **Temporal Memory Backends**: optional LSTM/Transformer adapters selectable via config.
+3. **Qualia Drift Alerts**: detect abnormal drops in `edge_clarity` / `motion_score` during video streams.
+4. **Dataset Health Scanner**: automatic checks for lighting imbalance, blur, and class skew before training.
+5. **Reproducibility Bundle Export**: one-click package (weights, config, metrics, artifacts) per run.
+
+### ภาษาไทย — ข้อเสนอฟังก์ชัน/แนวทางต่อยอดใหม่
+1. **หน้าจอ Run Registry**: สร้างแดชบอร์ดสำหรับค้นหาและเปรียบเทียบผลรันตามเวอร์ชันโมเดล ประเภทอินพุต และคะแนน qualia
+2. **Temporal Memory หลายรูปแบบ**: รองรับการสลับใช้งาน LSTM/Transformer ผ่านไฟล์ config โดยไม่ต้องแก้โค้ดหลัก
+3. **ระบบเตือน Qualia Drift**: แจ้งเตือนเมื่อค่า `edge_clarity` หรือ `motion_score` ลดลงผิดปกติระหว่างประมวลผลวิดีโอ
+4. **Dataset Health Scanner**: ตรวจคุณภาพชุดข้อมูลอัตโนมัติก่อนเทรน เช่น ความสว่างไม่สมดุล ภาพเบลอ หรือ class skew
+5. **Reproducibility Bundle Export**: ส่งออกชุดทำซ้ำผลลัพธ์ของแต่ละ run (weights, config, metrics, artifacts) ในคลิกเดียว
 
 ---
 
