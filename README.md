@@ -77,6 +77,7 @@ python main.py --video path/to/your/video.mp4
 | `--mode` | Operation mode (`infer`, `train`) | `infer` |
 | `--visualize` | Enable visualization of retinal output | `False` |
 | `--save_path` | Path to save trained model | `biovisionnet.pth` |
+| `--temporal_backend` | Temporal aggregation backend (`mean`, `lstm`, `transformer`) | `mean` |
 
 ---
 
@@ -163,7 +164,7 @@ This is the core upgrade in version 1.1s.
 ### 4. Temporal Processing (Consciousness Interface)
 *   **Logic**: Consciousness is not static; it is a flow. v1.1s maintains the **Temporal Adapter** from v2.
 *   **Input**: 5D Tensor `[Batch, Sequence, Channel, Height, Width]`.
-*   **Mechanism**: Aggregates features over time (currently via Mean Pooling, upgradable to LSTM/Transformer) to form a context-aware embedding.
+*   **Mechanism**: Aggregates sequence features from 5D input `[Batch, Sequence, Channel, Height, Width]` using the runtime-selectable `--temporal_backend` option: `mean` (temporal average pooling), `lstm` (single-layer recurrent encoder, last timestep), or `transformer` (self-attention encoder followed by temporal pooling).
 
 ---
 

@@ -14,6 +14,8 @@ def main():
     parser.add_argument('--save_path', type=str, default='biovisionnet.pth')
     parser.add_argument('--load_path', type=str, default=None)
     parser.add_argument('--visualize', action='store_true', help='Save edge detection visualization')
+    parser.add_argument('--temporal_backend', type=str, choices=['mean', 'lstm', 'transformer'], default='mean',
+                        help='Temporal aggregation backend for sequence input')
     args = parser.parse_args()
 
     # 2. Setup
@@ -21,7 +23,7 @@ def main():
     device = setup_device()
 
     # 3. Initialize Model
-    model = BioVisionNet(num_classes=1000).to(device)
+    model = BioVisionNet(num_classes=1000, temporal_backend=args.temporal_backend).to(device)
     
     if args.load_path:
         load_model(model, args.load_path, device)
