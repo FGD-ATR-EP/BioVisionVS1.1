@@ -118,12 +118,16 @@ class RetinalNeuralProcessing(nn.Module):
         return F.relu(self.conv(x))
 
 class TemporalProcessingAdapter(nn.Module):
+    """
+    Configurable temporal aggregation for sequence embeddings.
+    """
     """Configurable temporal adapter with Mean/LSTM/Transformer backends."""
 
     def __init__(
         self,
         input_dim: int,
         backend: str = "mean",
+        lstm_hidden_dim: int = 256,
         lstm_hidden_dim: Optional[int] = None,
         transformer_heads: int = 8,
         transformer_layers: int = 1,
@@ -135,6 +139,21 @@ class TemporalProcessingAdapter(nn.Module):
             self.adapter = nn.Identity()
             self.output_dim = input_dim
         elif self.backend == "lstm":
+            self.adapter = nn.LSTM(
+                input_size=input_dim,
+                hidden_size=lstm_hidden_dim,
+                num_layers=1,
+                batch_first=True,
+            )
+            self.output_dim = lstm_hidden_dim
+        elif self.backend == "transformer":
+            if input_dim % transformer_heads != 0:
+                raise ValueError(
+                    f"input_dim ({input_dim}) must be divisible by transformer_heads ({transformer_heads})"
+                )
+            encoder_layer = nn.TransformerEncoderLayer(
+                d_model=input_dim,
+                nhead=transformer_heads,
             hidden_dim = lstm_hidden_dim or input_dim
             self.adapter = nn.LSTM(
                 input_size=input_dim,
@@ -154,20 +173,23 @@ class TemporalProcessingAdapter(nn.Module):
             self.output_dim = input_dim
         else:
             raise ValueError(
+                f"Unsupported temporal backend: {backend}. Supported backends are: mean, lstm, transformer"
                 f"Unsupported temporal backend '{backend}'. Use one of: mean, lstm, transformer"
             )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # x: [Batch, Time, Features] or [Batch, Features]
-        if x.dim() != 3:
+        if x.dim() == 2:
             return x
+
+        if x.dim() != 3:
+            raise ValueError(f"Temporal input must be 2D or 3D tensor, got shape {tuple(x.shape)}")
 
         if self.backend == "mean":
             return x.mean(dim=1)
-
         if self.backend == "lstm":
-            outputs, _ = self.adapter(x)
-            return outputs[:, -1, :]
+            out, _ = self.adapter(x)
+            return out[:, -1, :]
 
         transformed = self.adapter(x)
         return transformed.mean(dim=1)
@@ -184,9 +206,11 @@ class BioVisionNetV1_1S(nn.Module):
                  embed_dim: int = 768,
                  dog_sigma_center: float = 1.0,
                  dog_sigma_surround: float = 3.0,
-                 temporal_steps: int = 1,
-                 temporal_backend: str = "mean"):
+                 temporal_backend: str = "mean",
+                 temporal_steps: int = 1):
         super().__init__()
+
+        self._temporal_steps = temporal_steps  # reserved for future use
 
         # 1. Perception Layers
         self.preprocess   = OpticalPreprocessing()
@@ -244,7 +268,7 @@ class BioVisionNetV1_1S(nn.Module):
 
         # --- Temporal & Decision Pathway ---
         embedding_seq = embedding.view(b, s, -1)
-        context_aware_embedding = self.temporal(embedding_seq) # [B, embed_dim]
+        context_aware_embedding = self.temporal(embedding_seq) # [B, temporal.output_dim]
         logits = self.classifier(context_aware_embedding) # [B, num_classes]
 
         # Reshape edge_maps to 5D [B, S, 32, H, W] for visualization

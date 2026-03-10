@@ -15,6 +15,7 @@ def main():
     parser.add_argument('--load_path', type=str, default=None)
     parser.add_argument('--visualize', action='store_true', help='Save edge detection visualization')
     parser.add_argument('--temporal_backend', type=str, choices=['mean', 'lstm', 'transformer'], default='mean',
+                        help='Temporal aggregation backend for sequence input')
                         help='Temporal adapter backend')
     args = parser.parse_args()
 
