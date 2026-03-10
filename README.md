@@ -77,6 +77,7 @@ python main.py --video path/to/your/video.mp4
 | `--mode` | Operation mode (`infer`, `train`) | `infer` |
 | `--visualize` | Enable visualization of retinal output | `False` |
 | `--save_path` | Path to save trained model | `biovisionnet.pth` |
+| `--temporal_backend` | Temporal adapter backend (`mean`, `lstm`, `transformer`) | `mean` |
 
 ---
 
@@ -245,18 +246,18 @@ erDiagram
 > Note: The "Completed Suggestions" list has been intentionally removed in both English and Thai sections to avoid mixing done work with active/planned initiatives.
 
 ### English — New Suggested Features / Next Steps
+- ✅ Completed in codebase: **Temporal Memory Backends** (`mean`, `lstm`, `transformer`) via CLI/configurable model initialization.
 1. **Run Registry UI**: dashboard for filtering runs by model version, input type, and qualia score.
-2. **Temporal Memory Backends**: optional LSTM/Transformer adapters selectable via config.
-3. **Qualia Drift Alerts**: detect abnormal drops in `edge_clarity` / `motion_score` during video streams.
-4. **Dataset Health Scanner**: automatic checks for lighting imbalance, blur, and class skew before training.
-5. **Reproducibility Bundle Export**: one-click package (weights, config, metrics, artifacts) per run.
+2. **Qualia Drift Alerts**: detect abnormal drops in `edge_clarity` / `motion_score` during video streams.
+3. **Dataset Health Scanner**: automatic checks for lighting imbalance, blur, and class skew before training.
+4. **Reproducibility Bundle Export**: one-click package (weights, config, metrics, artifacts) per run.
 
 ### ภาษาไทย — ข้อเสนอฟังก์ชัน/แนวทางต่อยอดใหม่
+- ✅ ดำเนินการแล้วในระบบ: **Temporal Memory หลายรูปแบบ** (`mean`, `lstm`, `transformer`) ผ่าน CLI/การตั้งค่าโมเดล
 1. **หน้าจอ Run Registry**: สร้างแดชบอร์ดสำหรับค้นหาและเปรียบเทียบผลรันตามเวอร์ชันโมเดล ประเภทอินพุต และคะแนน qualia
-2. **Temporal Memory หลายรูปแบบ**: รองรับการสลับใช้งาน LSTM/Transformer ผ่านไฟล์ config โดยไม่ต้องแก้โค้ดหลัก
-3. **ระบบเตือน Qualia Drift**: แจ้งเตือนเมื่อค่า `edge_clarity` หรือ `motion_score` ลดลงผิดปกติระหว่างประมวลผลวิดีโอ
-4. **Dataset Health Scanner**: ตรวจคุณภาพชุดข้อมูลอัตโนมัติก่อนเทรน เช่น ความสว่างไม่สมดุล ภาพเบลอ หรือ class skew
-5. **Reproducibility Bundle Export**: ส่งออกชุดทำซ้ำผลลัพธ์ของแต่ละ run (weights, config, metrics, artifacts) ในคลิกเดียว
+2. **ระบบเตือน Qualia Drift**: แจ้งเตือนเมื่อค่า `edge_clarity` หรือ `motion_score` ลดลงผิดปกติระหว่างประมวลผลวิดีโอ
+3. **Dataset Health Scanner**: ตรวจคุณภาพชุดข้อมูลอัตโนมัติก่อนเทรน เช่น ความสว่างไม่สมดุล ภาพเบลอ หรือ class skew
+4. **Reproducibility Bundle Export**: ส่งออกชุดทำซ้ำผลลัพธ์ของแต่ละ run (weights, config, metrics, artifacts) ในคลิกเดียว
 
 ---
 
