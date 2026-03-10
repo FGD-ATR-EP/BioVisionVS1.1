@@ -121,11 +121,14 @@ class TemporalProcessingAdapter(nn.Module):
     """
     Configurable temporal aggregation for sequence embeddings.
     """
+    """Configurable temporal adapter with Mean/LSTM/Transformer backends."""
+
     def __init__(
         self,
         input_dim: int,
         backend: str = "mean",
         lstm_hidden_dim: int = 256,
+        lstm_hidden_dim: Optional[int] = None,
         transformer_heads: int = 8,
         transformer_layers: int = 1,
     ):
@@ -151,6 +154,19 @@ class TemporalProcessingAdapter(nn.Module):
             encoder_layer = nn.TransformerEncoderLayer(
                 d_model=input_dim,
                 nhead=transformer_heads,
+            hidden_dim = lstm_hidden_dim or input_dim
+            self.adapter = nn.LSTM(
+                input_size=input_dim,
+                hidden_size=hidden_dim,
+                num_layers=1,
+                batch_first=True,
+            )
+            self.output_dim = hidden_dim
+        elif self.backend == "transformer":
+            encoder_layer = nn.TransformerEncoderLayer(
+                d_model=input_dim,
+                nhead=transformer_heads,
+                dim_feedforward=input_dim * 4,
                 batch_first=True,
             )
             self.adapter = nn.TransformerEncoder(encoder_layer, num_layers=transformer_layers)
@@ -158,6 +174,7 @@ class TemporalProcessingAdapter(nn.Module):
         else:
             raise ValueError(
                 f"Unsupported temporal backend: {backend}. Supported backends are: mean, lstm, transformer"
+                f"Unsupported temporal backend '{backend}'. Use one of: mean, lstm, transformer"
             )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
