@@ -15,6 +15,7 @@ This project is part of the **INSPIRAFIRMA / AETHERIUM-GENESIS** initiative, aim
 - [For Researchers: Technical Report (v1.1s)](#for-researchers-technical-report-v11s)
 - [System Architecture Diagram (Database-Aligned)](#system-architecture-diagram-database-aligned)
 - [Product Roadmap Suggestions (EN/TH)](#product-roadmap-suggestions-enth)
+- [Formal System Integration Report (TH)](docs/FORMAL_SYSTEM_INTEGRATION_REPORT_TH.md)
 - [Versioning Strategy](#versioning-strategy)
 - [License](#license)
 
